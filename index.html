@@ -1,0 +1,1102 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <!--main aframe-->
+    <script src="https://aframe.io/releases/1.0.4/aframe.min.js"></script>
+    <!-- geometry-merger-component "buffer" -->
+    <script src="https://unpkg.com/aframe-geometry-merger-component/dist/aframe-geometry-merger-component.min.js"></script>
+    <!-- aframe extra (control) -->
+    <script src="https://cdn.jsdelivr.net/gh/donmccurdy/aframe-extras@v6.1.0/dist/aframe-extras.min.js"></script>
+    <!--event component-->
+    <script src="https://unpkg.com/aframe-event-set-component@4.2.1/dist/aframe-event-set-component.min.js"></script>
+    <script src="https://cdn.rawgit.com/gladeye/aframe-preloader-component/1.0.2/dist/aframe-preloader-component.min.js"></script>
+    <!-- animation timeline -->
+    <script src="https://unpkg.com/aframe-animation-timeline-component@2.0.0/dist/aframe-animation-timeline-component.min.js"></script>
+    <script src="https://unpkg.com/aframe-animation-component@^4.1.1/dist/aframe-animation-timeline-component.min.js"></script>
+    <!--    firebase      -->
+    <script src="https://www.gstatic.com/firebasejs/5.7.2/firebase.js"></script>
+    <!--   jquery & bootstrap   -->
+    <script
+      src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+      integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+      integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+      integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+      crossorigin="anonymous"
+    ></script>
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+      integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
+      crossorigin="anonymous"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/5.4.0/bootbox.js"></script>
+
+    <script src="js/threex.dynamictexture.js"></script>
+    <script src="js/firebase.js"></script>
+
+    <script src="js/cameracontrol.js"></script>
+    <script src="js/playanimation.js"></script>
+    <script src="js/diary.js"></script>
+  </head>
+  <body>
+    <!--stats 可以顯示内存-->
+
+    <!--開場動畫，霧等等      -->
+
+    <a-scene  
+        renderer="antialias: auto;
+                   maxCanvasWidth: 1440;
+                   maxCanvasHeight: 1440;
+                  physicallyCorrectLights: true;
+                  highRefreshRate:true"
+      preloader
+      animation-timeline__1="timeline: #myTimeline; loop: true"
+      loading-screen="dotsColor:white; backgroundColor:black"
+      fog="color:black;near:0;far:1"
+      animation__fog="property:fog.far; delay:8500; from: 0.0000001; to:50; dur:3000; easing:linear"
+    >
+      <!--召喚貼圖-->
+      <a-assets timeout="10000">
+        <!--日記本場景的背景-->
+        <img
+          id="inventorybackground"
+          src="https://cdn.glitch.com/e1613982-1e3b-4c2d-8b0b-d1858a065585%2FUntitled-1.jpg?v=1598207359440"
+          preload="true"
+        />
+        <!--按鈕-->
+        <img
+          id="x"
+          src="https://cdn.glitch.com/e1613982-1e3b-4c2d-8b0b-d1858a065585%2Fx.png?v=1598577229555"
+          preload="true"
+        />
+        <img
+          id="toright"
+          src="https://cdn.glitch.com/e1613982-1e3b-4c2d-8b0b-d1858a065585%2Fright.png?v=1598577229320"
+          preload="true"
+        />
+        <img
+          id="toleft"
+          src="https://cdn.glitch.com/e1613982-1e3b-4c2d-8b0b-d1858a065585%2Fleft.png?v=1598577229224"
+          preload="true"
+        />
+        <img
+          id="typein"
+          src="https://cdn.glitch.com/e1613982-1e3b-4c2d-8b0b-d1858a065585%2Fenter.png?v=1598577229067"
+          preload="true"
+        />
+
+        <!--水泥墻-->
+        <img
+          id="walldirt"
+          src="https://cdn.glitch.com/e1613982-1e3b-4c2d-8b0b-d1858a065585%2FUntitled-2.png?v=1597815289840"
+          preload="true"
+        />
+        <img
+          id="walldirt2"
+          src="https://cdn.glitch.com/e1613982-1e3b-4c2d-8b0b-d1858a065585%2FUntitled-3.png?v=1597816460077"
+          preload="true"
+        />
+
+        <img
+          id="wallalbe"
+          src="https://cdn.glitch.com/e1613982-1e3b-4c2d-8b0b-d1858a065585%2Fuflnbcofw_8K_Albedo.jpg?v=1597676847048"
+          preload="true"
+        />
+        <img
+          id="wallrough"
+          src="https://cdn.glitch.com/e1613982-1e3b-4c2d-8b0b-d1858a065585%2Fuflnbcofw_8K_Roughness.jpg?v=1592466922669"
+          preload="true"
+        />
+        <img
+          id="wallnormal"
+          src="https://cdn.glitch.com/e1613982-1e3b-4c2d-8b0b-d1858a065585%2Fuflnbcofw_8K_Normal.jpg?v=1597676777613"
+          preload="true"
+        />
+        <img
+          id="wallAO"
+          src="https://cdn.glitch.com/e1613982-1e3b-4c2d-8b0b-d1858a065585%2Fuflnbcofw_8K_AO.jpg?v=1592469215476"
+          preload="true"
+        />
+
+        <!--地板-->
+        <img
+          id="floorAO"
+          src="https://cdn.glitch.com/e1613982-1e3b-4c2d-8b0b-d1858a065585%2Fsl2qedtp_8K_AO.jpg?v=1592527027430"
+          preload="true"
+        />
+        <img
+          id="floorrough"
+          src="https://cdn.glitch.com/e1613982-1e3b-4c2d-8b0b-d1858a065585%2Fsl2qedtp_8K_Roughness.jpg?v=1592527028254"
+          preload="true"
+        />
+        <img
+          id="floornor"
+          src="https://cdn.glitch.com/e1613982-1e3b-4c2d-8b0b-d1858a065585%2Fsl2qedtp_8K_Normal.jpg?v=1592527028345"
+          preload="true"
+        />
+        <img
+          id="flooralb"
+          src="https://cdn.glitch.com/e1613982-1e3b-4c2d-8b0b-d1858a065585%2Fsl2qedtp_8K_Albedo.jpg?v=1597676151852"
+          preload="true"
+        />
+        <!--房頂-->
+        <img
+          id="topAlbe"
+          src="https://cdn.glitch.com/e1613982-1e3b-4c2d-8b0b-d1858a065585%2Fugqiccps_8K_Albedo.jpg?v=1592530163120"
+          preload="true"
+        />
+        <img
+          id="topRough"
+          src="https://cdn.glitch.com/e1613982-1e3b-4c2d-8b0b-d1858a065585%2Fugqiccps_8K_Roughness.jpg?v=1592530162762"
+          preload="true"
+        />
+        <img
+          id="topNor"
+          src="https://cdn.glitch.com/e1613982-1e3b-4c2d-8b0b-d1858a065585%2Fugqiccps_8K_Normal.jpg?v=1592530163228"
+          preload="true"
+        />
+        <img
+          id="topAO"
+          src="https://cdn.glitch.com/e1613982-1e3b-4c2d-8b0b-d1858a065585%2Fugqiccps_8K_AO.jpg?v=1592533446822"
+          preload="true"
+        />
+        <!--門模型和貼圖-->
+        <a-asset-item
+          id="door_frame"
+          src="https://cdn.glitch.com/e1613982-1e3b-4c2d-8b0b-d1858a065585%2FDoor02a.obj?v=1592801031499"
+          preload="true"
+        ></a-asset-item>
+        <a-asset-item
+          id="door"
+          src="https://cdn.glitch.com/e1613982-1e3b-4c2d-8b0b-d1858a065585%2FDoor02_door.obj?v=1592801032478"
+          preload="true"
+        ></a-asset-item>
+        <img
+          id="door_col"
+          src="https://cdn.glitch.com/e1613982-1e3b-4c2d-8b0b-d1858a065585%2Fdoor02_frame_door02Surface_Color.jpg?v=1592801806087"
+          crossorigin="anonymous"
+          preload="true"
+        />
+        <img
+          id="door_normal"
+          src="https://cdn.glitch.com/e1613982-1e3b-4c2d-8b0b-d1858a065585%2Fdoor02_frame_door02Normal.jpg?v=1592804718312"
+          crossorigin="anonymous"
+          preload="true"
+        />
+        <img
+          id="door_AO"
+          src="https://cdn.glitch.com/e1613982-1e3b-4c2d-8b0b-d1858a065585%2Fdoor02_frame_door02Ambient_Occlusion.jpg?v=1592801805168"
+          crossorigin="anonymous"
+          preload="true"
+        />
+        <img
+          id="door_glass"
+          src="https://cdn.glitch.com/e1613982-1e3b-4c2d-8b0b-d1858a065585%2FFree_dirty_blue_window_glass_texture_for_layers_(3002527423).jpg?v=1592803540901"
+          preload="true"
+        />
+        <img
+          id="door_frame_rough"
+          src="https://cdn.glitch.com/e1613982-1e3b-4c2d-8b0b-d1858a065585%2Fschbehmp_4K_Roughness.jpg?v=1599089169997"
+          preload="true"
+        />
+        <img
+          id="strach_normal"
+          src="https://cdn.glitch.com/e1613982-1e3b-4c2d-8b0b-d1858a065585%2Fschbehmp_4K_normal.jpg?v=1592734212168"
+          preload="true"
+        />
+
+        <a-mixin
+          id="the_door_frame"
+          obj-model="obj:#door_frame"
+          material="sphericalEnvMap:#mirror_enviro; roughness:3;metalness:0.9; roughnessMap:#door_frame_rough; roughnessTextureRepeat:3 3"
+        ></a-mixin>
+        <a-mixin
+          id="the_door"
+          obj-model="obj:#door"
+          material="src:#door_col; normalMap:#door_normal; sphericalEnvMap:#mirror_enviro; roughness:1.5 ;metalness:0.3; normalScale:0.5 0.5; color:#bec4ca; emissive:#000000;roughnessMap:#door_frame_rough; roughnessTextureRepeat:1 1"
+        ></a-mixin>
+
+        <!--這是墻壁和地面的preset，因爲要複製好幾遍，寫這裏比較省地方看著清楚一些-->
+        <a-mixin
+          id="sidewall"
+          geometry="primitive:plane;width:4.8; height:4"
+          material="src: #wallalbe; 
+                    normalMap: #wallnormal ;
+                    roughnessMap: #wallrough;
+                    ambientOcclusionMap: #wallAO;        
+                    normalScale:0.7 0.7;
+                    roughness:0.6;
+                    metalness:0;
+                    ambientOcclusionMapIntensity: 20;
+                    metalnessTextureRepeat: 2.2 2;
+                    repeat:2.2 2; 
+                    normalTextureRepeat:2.2 2;
+                    roughnessTextureRepeat:2.2 2;
+                    ambientOcclusionTextureRepeat:2.2 2"
+        ></a-mixin>
+        <a-mixin
+          id="frontwall"
+          geometry="primitive:plane;width:4; height:4"
+          material="src: #wallalbe; 
+                    normalMap: #wallnormal;
+                    roughnessMap: #wallrough;
+                    ambientOcclusionMap: #wallAO;
+                    normalScale: 0.7 0.7;
+                    roughness:0.6;
+                    metalness:0;
+                    ambientOcclusionMapIntensity: 16;
+                    repeat:2 2; 
+                    normalTextureRepeat:2 2;
+                    roughnessTextureRepeat:2 2;
+                    ambientOcclusionTextureRepeat: 2 2"
+        ></a-mixin>
+
+        <a-mixin
+          id="floor_mixin"
+          material="src: #flooralb; 
+                    normalMap: #floornor;
+                    roughnessMap: #floorrough;
+                    ambientOcclusionMap: #floorAO;
+                    roughness:0.58;
+                    metalness:0.01;
+                    normalScale:1 1;
+                    ambientOcclusionMapIntensity: 0;
+                    color:#f5fffa;
+                    repeat:3 3; 
+                    normalTextureRepeat:3 3;
+                    roughnessTextureRepeat:3 3;
+                    ambientOcclusionTextureRepeat:3 3"
+        ></a-mixin>
+
+        <a-mixin
+          id="Skirting"
+          geometry="depth: 0.1; height: 0.22; width: 6"
+        ></a-mixin>
+
+        <!--床-->
+
+        <a-asset-item
+          id="bed"
+          src="https://cdn.glitch.com/e1613982-1e3b-4c2d-8b0b-d1858a065585%2Fbed.obj?v=1597896185716"
+          preload="true"
+        ></a-asset-item>
+
+        <a-asset-item
+          id="anotherbed"
+          src="https://cdn.glitch.com/e1613982-1e3b-4c2d-8b0b-d1858a065585%2Fuploads_files_2255518_mattress_folded%20(1).obj?v=1598206358403"
+          preload="true"
+        ></a-asset-item>
+
+        <img
+          id="bed_color"
+          src="https://cdn.glitch.com/e1613982-1e3b-4c2d-8b0b-d1858a065585%2Fmattress_Base_Color.jpg?v=1597896186459"
+          preload="true"
+        />
+        <img
+          id="bed_normal"
+          src="https://cdn.glitch.com/e1613982-1e3b-4c2d-8b0b-d1858a065585%2Fmattress_Normal_DirectX.jpg?v=1597896186295"
+          preload="true"
+        />
+        <img
+          id="bed_rough"
+          src="https://cdn.glitch.com/e1613982-1e3b-4c2d-8b0b-d1858a065585%2Fmattress_Roughness.jpg?v=1597896185779"
+          preload="true"
+        />
+        <img
+          id="bed_AO"
+          src="https://cdn.glitch.com/e1613982-1e3b-4c2d-8b0b-d1858a065585%2Fmattress_Mixed_AO.jpg?v=1597896186143"
+          preload="true"
+        />
+
+        <!--
+        <img
+          id="bed_col"
+          src="https://cdn.glitch.com/e1613982-1e3b-4c2d-8b0b-d1858a065585%2Fdirty_mattress_d.jpg?v=1592810617639"
+          preload="true"
+        />
+        <img
+          id="bed_normal"
+          src="https://cdn.glitch.com/e1613982-1e3b-4c2d-8b0b-d1858a065585%2Fdirty_mattress_n.jpg?v=1592810751461"
+          preload="true"
+        />
+        <img
+          id="bed_rough"
+          src="https://cdn.glitch.com/e1613982-1e3b-4c2d-8b0b-d1858a065585%2Fdirty_mattress_s.jpg?v=1592810761445"
+          preload="true"
+        />
+        <a-mixin
+          id="bed_mixin"
+          obj-model="obj:https://cdn.glitch.com/e1613982-1e3b-4c2d-8b0b-d1858a065585%2FHospital_Bed_Matress_c4doutput.obj?v=1592810033359"
+          material="src:#bed_col;normalMap:#bed_normal;roughnessMap:#bed_rough; color:#dbdbdb;
+        roughness:2; normalScale:1 1"
+          shadow=""
+        ></a-mixin>
+          -->
+        <!--燈-->
+        <img
+          id="light_col"
+          src="https://cdn.glitch.com/e1613982-1e3b-4c2d-8b0b-d1858a065585%2Fceilinglight_ALB.jpg?v=1592812895299"
+          preload="true"
+        />
+        <img
+          id="light_normal"
+          src="https://cdn.glitch.com/e1613982-1e3b-4c2d-8b0b-d1858a065585%2FDefaultSurface_Color.jpg?v=1592812895061"
+          preload="true"
+        />
+        <a-mixin
+          id="light_mixin"
+          obj-model="obj:https://cdn.glitch.com/e1613982-1e3b-4c2d-8b0b-d1858a065585%2Fbai%20chi%20deng(c4dout).obj?v=1592813066352"
+          material="src:#light_col;normalMap:#light_normal"
+        ></a-mixin>
+
+        <!--cctv-->
+        <a-asset-item
+          id="cctv_loader"
+          src="https://cdn.glitch.com/e1613982-1e3b-4c2d-8b0b-d1858a065585%2FCCTV%20with%20animation.gltf?v=1598571010492"
+          preload="true"
+        ></a-asset-item>
+        <!--喇叭-->
+
+
+        <!--聲音檔案  audio -->
+
+        <audio id="mouse" preload="true" src="sounds/mouse.mp3"></audio>
+
+        <audio id="steps" preload="true" src="sounds/footstep.mp3"></audio>
+
+        <audio
+          id="turnpage"
+          preload="true"
+          src="https://cdn.glitch.com/e1613982-1e3b-4c2d-8b0b-d1858a065585%2Fpageflip%20quick.mp3?v=1597891716815"
+        ></audio>
+
+        <audio id="scream1" preload="true" src="sounds/scream1.mp3"></audio>
+
+        <!--日記本-->
+        <a-asset-item
+          id="diary_model"
+          src="https://cdn.glitch.com/e1613982-1e3b-4c2d-8b0b-d1858a065585%2Fdiary_notebook.gltf?v=1595174702470"
+          preload="true"
+        ></a-asset-item>
+
+        <a-asset-item
+          id="diary_model_nottheroom"
+          src="https://cdn.glitch.com/e1613982-1e3b-4c2d-8b0b-d1858a065585%2Fbook%20still_2.gltf?v=1597043921661"
+          preload="true"
+        ></a-asset-item>
+
+        <a-asset-item
+          id="diary_model_nextpage"
+          src="https://cdn.glitch.com/e1613982-1e3b-4c2d-8b0b-d1858a065585%2Fflip%20book_next_new.gltf?v=1598402347578"
+          preload="true"
+        ></a-asset-item>
+        <a-asset-item
+          id="diary_model_prepage"
+          src="https://cdn.glitch.com/e1613982-1e3b-4c2d-8b0b-d1858a065585%2Fflip%20book_pre_nwe.gltf?v=1598402688347"
+          preload="true"
+        ></a-asset-item>
+
+        <!--動畫-->
+        <a-asset-item
+          id="human"
+          src="https://cdn.glitch.com/e1613982-1e3b-4c2d-8b0b-d1858a065585%2F7.gltf?v=1596952417686"
+          preload="auto"
+        ></a-asset-item>
+
+        <a-timeline id="myTimeline">
+          <a-timeline-animation
+            select="#body"
+            name="movetoright"
+          ></a-timeline-animation>
+          <a-timeline-animation
+            select="#body"
+            name="turnleft"
+          ></a-timeline-animation>
+          <a-timeline-animation
+            select="#body"
+            name="movetoleft"
+          ></a-timeline-animation>
+          <a-timeline-animation
+            select="#body"
+            name="turnright"
+          ></a-timeline-animation>
+        </a-timeline>
+
+        <a-mixin
+          id="roaming"
+          animation__movetoleft="property:position; from: 18 0 3.35; to: -18 0 3.35; dur:22000; easing:linear; autoplay:false"
+          animation__movetoright="property:position; from: -18 0 3.35; to: 18 0 3.35; dur:22000; easing:linear; autoplay:false"
+          animation__turnleft="property:rotation; from: 0 90 0; to: 0 -90 0 0; dur:800; easing:linear; autoplay:false"
+          animation__turnright="property:rotation; from: 0 -90 0; to: 0 90 0 0; dur:800; easing:linear; autoplay:false"
+        ></a-mixin>
+      </a-assets>
+
+      <!-- 控制 -->
+      <a-entity
+        id="user"
+        movement-controls="constrainToNavMesh:true; speed:0.2"
+        position="0 0 0"
+      >
+        <a-entity
+          camera="active:true"
+          raycaster="far:8;interval:5;objects:entity"
+          position="0 1.6 0"
+          look-controls="pointerLockEnabled: true"
+        >
+          <!--这个是镶嵌在camera中的一个cursor,就是准星，指针，光标等等，标注在屏幕最中间-->
+          <a-cursor
+            position="0 0 -0.1"
+            fuse="true"
+            geometry="primitive:ring;radiusInner:0.001;radiusOuter:0.0015"
+            material="color:white"
+            opacity="0.8"
+            animation__click="property: scale; 
+										startEvents: click; 
+										easing: easeInCubic; 
+										dur: 150; 
+										from: 0.1 0.1 0.1; 
+										to: 1 1 1"
+            animation__fusing="property: scale; 
+										startEvents: fusing; 
+										easing: easeInCubic; 
+										dur: 1500; 
+										from: 1 1 1; 
+										to: 0.1 0.1 0.1"
+            animation__mouseleave="property: scale; 
+										startEvents: mouseleave; 
+										easing: easeInCubic; 
+										dur: 500; 
+										to: 1 1 1"
+          >
+          </a-cursor> </a-entity
+      ></a-entity>
+
+      <!--設置navmesh，控制可移動的範圍-->
+      <a-plane
+        id="navmesh"
+        rotation="-90 0 0"
+        position="0 0 -0.39494"
+        width="3.85"
+        height="4.6"
+        nav-mesh
+        visible="false"
+      ></a-plane>
+
+      <!--開場白-->
+      <a-entity
+        text="value: You spend more than six hours on the Internet everyday for something other than work
+              or study. You are most likely to become addicted to the internet. It is urging that you  
+              muse be treated foryour internet addiction with isolation theapy.; 
+        align:center; wrapCount:85;width:1.75; lineHeight:80"
+        position="0 1.75 -0.8"
+        animation__fadein="property:text.opacity; easing:linear;dur:1500;from:0;to:1"
+        animation__fadeout="property:text.opacity; easing:linear; delay:8500;dur:1500;from:1;to:0"          
+      >  
+      </a-entity>
+
+      <!--建築結構-->
+
+      <a-entity
+        id="structure"
+        geometry-merger="preserveOriginal: true"
+        class="roomscene"
+      >
+        <a-plane
+          id="ground"
+          rotation="-90 45 0"
+          position="0 0.001 -0.5"
+          width="6.5"
+          height="6.5"
+          mixin="floor_mixin"
+          shadow=""
+        ></a-plane>
+        <a-plane
+          id="ground-2"
+          rotation="-90 0 0"
+          position="1.55692 0.01 6.11698"
+          width="40"
+          height="8"
+          material="src: #flooralb; 
+                    normalMap: #floornor;
+                    roughnessMap: #floorrough;
+                    ambientOcclusionMap: #floorAO;
+                    roughness:0.55;
+                    metalness:0.11;
+                    normalScale:2 2;
+                    ambientOcclusionMapIntensity: -200;
+                    color:#f5fffa;
+                    repeat:15 3; 
+                    normalTextureRepeat:15 3;
+                    roughnessTextureRepeat:15 3;
+                    ambientOcclusionTextureRepeat:15 3"
+          shadow=""
+        ></a-plane>
+        <a-plane
+          id="ceiling"
+          position="0 3.3 -1"
+          rotation="90 0 0"
+          width="6"
+          height="6"
+          material="src: #topAlbe; 
+                    normalMap: #topNor;
+                    roughnessMap: #topRough;
+                    ambientOcclusionMap: #topAO;
+                    roughness:0.9;
+                    metalness:0.01;
+                    normalScale:2 2;
+                    ambientOcclusionMapIntensity: -5.5;
+                    color:#b8b6b2;
+                    repeat:3 3; 
+                    normalTextureRepeat:3 3;
+                    roughnessTextureRepeat:3 3"
+          shadow=""
+        ></a-plane>
+        <a-plane
+          id="ceiling-2"
+          position="0 3.3 5.61693"
+          rotation="90 0 0"
+          width="42"
+          height="7"
+          shadow=""
+          material="src: #topAlbe; 
+                    normalMap: #topNor;
+                    roughnessMap: #topRough;
+                    ambientOcclusionMap: #topAO;
+                    roughness:0.9;
+                    metalness:0.01;
+                    normalScale:2 2;
+                    ambientOcclusionMapIntensity: 4.6;
+                    color:#b8b6b2;
+                    repeat:18 3; 
+                    normalTextureRepeat:18 3;
+                    roughnessTextureRepeat:18 3"
+          sound="src: #mouse; autoplay:true; loop:true; volume:1.5; distanceModel:exponential"
+        ></a-plane>
+        <a-entity
+          id="wall_back"
+          position="-0.785 2 2"
+          rotation="0 180 0"
+          geometry="primitive:plane;width:2.5; height:4"
+          material="src: #wallalbe; 
+                    normalMap: #wallnormal;
+                    roughnessMap: #wallrough;
+                    ambientOcclusionMap: #wallAO;
+                    metalnessMap: #wallspec;
+                    normalScale:0.7 0.7;
+                    roughness:0.5;
+                    metalness:0;
+                    ambientOcclusionMapIntensity: 20;
+                    repeat:1.2 2; 
+                    normalTextureRepeat:1.2 2;
+                    roughnessTextureRepeat:1.2 2;
+                    ambientOcclusionTextureRepeat:1.2 2"
+        ></a-entity>
+        <a-entity
+          id="wall_back2"
+          position="1.95 2 2"
+          rotation="0 180 0"
+          geometry="primitive:plane;width:0.8; height:4"
+          material="src: #wallalbe; 
+                    normalMap: #wallnormal;
+                    roughnessMap: #wallrough;
+                    ambientOcclusionMap: #wallAO;
+                    metalnessMap: #wallspec;
+                    normalScale:0.7 0.7;
+                    roughness:0.5;
+                    metalness:0;
+                    ambientOcclusionMapIntensity: 20;
+                    repeat:0.4 2; 
+                    normalTextureRepeat:0.4 2;
+                    roughnessTextureRepeat:0.4 2;
+                    ambientOcclusionTextureRepeat: 0.4 2"
+        ></a-entity>
+        <a-entity
+          id="wall_back3"
+          position="1 3.056 2"
+          rotation="0 180 0"
+          geometry="primitive:plane;width:1.17; height:1.5"
+          material="src: #wallalbe; 
+                    normalMap: #wallnormal;
+                    roughnessMap: #wallrough;
+                    ambientOcclusionMap: #wallAO;
+                    metalnessMap: #wallspec;
+                    normalScale:0.7 0.7;
+                    roughness:0.5;
+                    metalness:0;
+                    ambientOcclusionMapIntensity: 20;
+                    repeat:0.61 0.5;  
+                    normalTextureRepeat:0.61 0.5;
+                    roughnessTextureRepeat:0.61 0.5;
+                    ambientOcclusionTextureRepeat: 0.61 0.5"
+        ></a-entity>
+
+        <a-entity
+          id="dirt_left"
+          geometry="primitive: plane; width: 5.03; height: 3.49"
+          material="src:#walldirt; transparent: true; color: #e0d8be; opacity: 0.6;"
+          rotation="0 90 0"
+          position="-1.999 1.66719 -0.435"
+          shadow="cast:false"
+        ></a-entity>
+        <a-entity
+          id="dirt_front"
+          geometry="primitive: plane; width: 4.16; height: 3.49"
+          material="src:#walldirt; transparent: true; color: #e0d8be; opacity: 0.6"
+          rotation=""
+          position="0.05 1.66719 -2.7648"
+          shadow="cast:false"
+        ></a-entity>
+        <a-entity
+          id="dirt_right"
+          geometry="primitive: plane; width: 5; height: 3.49"
+          material="src:#walldirt; transparent: true; color: #e0d8be; opacity: 0.6"
+          rotation="0 -90 0"
+          position="1.999 1.667 -0.323"
+          shadow="cast:false"
+        ></a-entity>
+        <a-entity
+          id="dirt_floor"
+          geometry="primitive: plane; width: 4.2; height: 4.94"
+          material="src: #walldirt; transparent: true; color: #ddd5bb; opacity: 0.45"
+          rotation="-90 0 0"
+          position="-0.00851 0.0012 -0.40887"
+          shadow="cast:false"
+        ></a-entity>
+        <a-entity
+          id="dirt_back"
+          geometry="primitive: plane; width: 0.61; height:3"
+          material="src:#walldirt2; transparent: true; color: #e0d8be; opacity: 0.75"
+          rotation="0 180 0"
+          position="1.68842 1.52796 1.992"
+        ></a-entity>
+        <a-entity
+          id="dirt_back-2"
+          geometry="primitive: plane; width: 0.6; height: 2.46"
+          material="src:#walldirt2; transparent: true; color: #e0d8be; opacity:0.9"
+          rotation="0 180 90"
+          position="-0.79839 0.298 1.992"
+        ></a-entity>
+        <a-entity
+          id="dirt_back-3"
+          geometry="primitive: plane; width: 0.88; height: 3.46"
+          material="src: #walldirt2; transparent: true; color: #e0d8be; opacity: 0.8"
+          rotation="0 180 180"
+          position="-1.574 1.713 1.992"
+        ></a-entity>
+
+        <a-entity
+          id="wall_front"
+          position="0 2 -2.765"
+          rotation="0 0 0"
+          mixin="frontwall"
+          shadow=""
+        ></a-entity>
+
+        <a-entity
+          id="wall_right"
+          position="2 2 -0.37"
+          rotation="0 -90 0"
+          mixin="sidewall"
+          shadow=""
+          sound="src:#scream1; on: click"
+        ></a-entity>
+
+        <a-entity
+          id="wall_left"
+          position="-2 2 -0.37"
+          rotation="0 90 0"
+          mixin="sidewall"
+          sound="src:#scream1; on: click"
+          shadow=""
+        ></a-entity>
+        <a-entity
+          id="wall_front-2"
+          position="0.804 2 4.7"
+          rotation="180 0 0"
+          mixin="frontwall"
+          shadow=""
+          material=""
+        ></a-entity>
+        <a-entity
+          id="wall_front-3"
+          position="-3.2 2 4.7"
+          rotation="180 0 0"
+          mixin="frontwall"
+          shadow=""
+          material=""
+        ></a-entity>
+        <a-entity
+          id="wall_front-4"
+          position="-7.173 2 4.7"
+          rotation="180 0 0"
+          mixin="frontwall"
+          shadow=""
+          material=""
+        ></a-entity>
+        <a-entity
+          id="wall_front-5"
+          position="4.765 2 4.7"
+          rotation="180 0 0"
+          mixin="frontwall"
+          shadow=""
+          material=""
+        ></a-entity>
+        <a-entity
+          id="wall_front-6"
+          position="8.732 2 4.7"
+          rotation="180 0 0"
+          mixin="frontwall"
+          shadow=""
+          material=""
+        ></a-entity>
+        <a-entity
+          id="wall_front-7"
+          position="-11.15989 2 4.7"
+          rotation="180 0 0"
+          mixin="frontwall"
+          shadow=""
+          material=""
+        ></a-entity>
+        <a-entity
+          id="wall_front-8"
+          position="4.31925 1.9 2.16469"
+          rotation=""
+          mixin="frontwall"
+          shadow=""
+          material=""
+        ></a-entity>
+        <a-entity
+          id="wall_front-9"
+          position="-1.248 1.9 2.16469"
+          rotation=""
+          mixin="frontwall"
+          shadow=""
+          material=""
+          scale="0.58 1.06 1"
+        ></a-entity>
+        <a-entity
+          id="wall_back3-2"
+          position="1.02 4.684 2.12918"
+          rotation=""
+          geometry="primitive: plane; width: 7.15; height: 2.61"
+          shadow=""
+          material=""
+        ></a-entity>
+        <a-entity
+          id="wall_right-2"
+          position="-2.07 1.7 -0.6702"
+          rotation="0 -90 0"
+          mixin="sidewall"
+          shadow=""
+          geometry=""
+          material=""
+        ></a-entity>
+      </a-entity>
+
+      <!--其他模型 (裝飾)-->
+      <!--door-->
+      <a-entity id="door_of_the_room" class="roomscene" visible="true">
+        <a-entity
+          mixin="the_door"
+          id="the_door_2"
+          position="1 0 2.05"
+          scale="1.2 1.2 1.2"
+          rotation="0 180 0"
+        ></a-entity>
+        <a-entity
+          mixin="the_door_frame"
+          id="a_frame"
+          position="1 0 2.05"
+          scale="1.2 1.2 1.2"
+          rotation="0 180 0"
+        >
+        </a-entity>
+        <a-entity
+          id="glass"
+          geometry="primitive: box"
+          rotation="0 180 0"
+          position="0.997 1.74 2.016"
+          scale="0.62 0.62 0.03"
+          material="src:#door_glass ;opacity:0.75; sphericalEnvMap:#mirror_enviro; metalness:0; color:#595959;roughenss:1"
+        ></a-entity>
+      </a-entity>
+
+      <!--床-->
+      <!--
+      <a-entity
+        class="roomscene"
+        id="bed"
+        mixin="bed_mixin"
+        scale="0.0023 0.0023 0.0023"
+        position="-4.737 -0.682 -0.104"
+        rotation="0 -100 0"
+      ></a-entity>
+      -->
+
+      <a-entity
+        class="roomscene"
+        id="the_bed"
+        obj-model="obj:#bed"
+        scale="1.8 2 2"
+        position="-0.979 0 -0.933"
+        rotation="0 78.290 0"
+        shadow=""
+        material="src: #bed_color; 
+                    normalMap: #bed_normal ;
+                    roughnessMap: #bed_rough;
+                    ambientOcclusionMap: #bed_AO;        
+                    normalScale:0.5 0.5;
+                    roughness:0.8;
+                    metalness:0;
+                    color:#f4f4eb;
+                  width:1024;height:1024"
+      ></a-entity>
+
+      <a-entity
+        class="roomscene"
+        id="the_bed2"
+        obj-model="obj:#anotherbed"
+        scale="0.045 0.045 0.045"
+        position="-1.84503 0.112 -0.29437"
+        rotation="0 -112.881 0"
+        shadow=""
+        material="src: #bed_color; 
+                    normalMap: #bed_normal ;
+                    roughnessMap: #bed_rough;
+                    ambientOcclusionMap: #bed_AO;        
+                    normalScale:0.5 0.5;
+                    roughness:0.8;
+                    metalness:0;
+                    color:#f4f4eb;
+                  width:1024;height:1024"
+      ></a-entity>
+
+      <!--燈模型-->
+      <a-entity id="this_is_light" class="roomscene">
+        <a-entity
+          id="light_model"
+          mixin="light_mixin"
+          scale="0.011 0.011 0.011"
+          rotation=""
+          position="0.849 2.75 -1.625"
+        ></a-entity>
+        <a-entity
+          id="1"
+          geometry="primitive: cylinder; height: 1.3; radius: 0.01"
+          material="color: #5e5e5e"
+          position="-0.7 3.392 -1.625"
+        ></a-entity>
+        <a-entity
+          id="2"
+          geometry="primitive: cylinder; height: 1.3; radius: 0.01"
+          material="color: #5e5e5e"
+          position="0.7 3.392 -1.625"
+        ></a-entity>
+        <a-entity
+          id="for_light"
+          light="angle: 100; distance: 1.1; type: spot; decay:1; intensity:3; color:#fffff;"
+          rotation="90 -0.52 0"
+          position="0 2.175 -1.625"
+        ></a-entity>
+        <a-entity
+          id="light_model-2"
+          mixin="light_mixin"
+          scale="0.012 0.012 0.012"
+          rotation="0 90 0"
+          position="4.5 3.15 2.4"
+          material=""
+        ></a-entity>
+      </a-entity>
+
+      <!--CCTV-->
+      <a-entity
+        class="roomscene"
+        id="CCTV"
+        gltf-model="#cctv_loader"
+        scale="0.006 0.006 0.006"
+        position="1.72 2.75 1.7"
+        rotation="-1.964 -25.18 10.22"
+        animation-mixer
+      ></a-entity>
+
+      <!--喇叭-->
+  
+
+      <!--光照-->
+
+      <a-light
+        type="spot"
+        id="key_light"
+        position="0 2.65 -1.625"
+        light="type: spot; distance: 4.93; decay: 0.5; 
+             intensity: 8; angle: 80; color: #a9a598; 
+             castShadow: true; shadowRadius: 4.; penumbra: 0.4;shadowMapHeight: 3000; shadowMapWidth:3000"
+        rotation="-90 0 0"
+      ></a-light>
+
+      <a-light type="ambient" intensity="1" color="#313545"></a-light>
+      <a-entity
+        light="angle: 37.58; intensity: 3; distance: 8.93; penumbra: 1; type: spot; castShadow: true"
+        rotation="-93.06 0 0"
+        position="4.5 3.15 3.33"
+        id="outside_light"
+      ></a-entity>
+      <a-light
+        type="spot"
+        id="key_light_outside"
+        position="-10.36001 2.14725 0.45504"
+        light="distance: 35; decay: 0.5; intensity: 11; angle: 62.79; color: #a9a598; groundColor: #ffffff; castShadow: true; penumbra: 0.4"
+        rotation="-14.690064909359178 -164.25153000353848 -169.204"
+      ></a-light>
+
+      <!--屋子裏的日記本-->
+      <a-entity
+        class="roomscene"
+        id="the_notebook"
+        gltf-model="#diary_model_nottheroom"
+        position="1 0.02 -2.02"
+        scale="0.012 0.012 0.012"
+        rotation="0 -18 0"
+        shadow="receive:false"
+        cameraswitch
+      ></a-entity>
+
+      <!--日記本的場景的燈和環境-->
+
+      <a-sky
+        material="src:#inventorybackground"
+        geometry="radius: 24;phiLength:361"
+        position="0 0 0"
+      ></a-sky>
+
+      <!--日記本翻頁動畫的部分-->
+      <a-entity
+        class="diaryscene"
+        visible="false"
+        id="diary"
+        gltf-model="#diary_model_nottheroom"
+        position="0.675 1.5 -2.3"
+        scale="0.018 0.018 0.018"
+        rotation="70 0 0"
+        diary
+        clear
+      ></a-entity>
+
+      <a-entity
+        id="nextpage"
+        class="diaryscene"
+        visible="false"
+        gltf-model="#diary_model_nextpage"
+        position="0.675 1.5 -2.3"
+        scale="0.018 0.018 0.018"
+        rotation="70 0 0"
+        clear
+      ></a-entity>
+
+      <a-entity
+        id="prepage"
+        class="diaryscene"
+        visible="false"
+        gltf-model="#diary_model_prepage"
+        position="0.675 1.5 -2.3"
+        scale="0.018 0.018 0.018"
+        rotation="70 0 0"
+        clear2
+      ></a-entity>
+
+      <!--翻頁標記-->
+      <a-image
+        id="next_page_array"
+        src="#toright"
+        position="1.67686 1.018 -2.14015"
+        scale="0.15 0.15 0.15"
+        playanimation=""
+        class="diaryscene"
+        visible="false"
+        rotation="0 -25 0"
+       animation__enter="property: scale; startEvents:mouseenter; to: 0.2 0.2 0.2;dur:200"
+       animation__leave="property: scale; startEvents:mouseleave; to: 0.15 0.15 0.15;dur:200"
+                event-set__enter="_event: mouseenter; _target: #nexttext; visible: true"
+      event-set__leave="_event: mouseleave; _target: #nexttext; visible: false"          
+        sound="src: #turnpage; on: click"
+      >
+    <a-text id="nexttext" value="Next page" align="center" color="#FFF" visible="false" position="0 -0.7 0"></a-text>
+      </a-image>
+
+      <a-image
+        id="pre_page_array"
+        src="#toleft"
+        position="0.20148 1.018 -2.17315"
+        scale="0.15 0.15 0.15"
+        rotation="0 25 0"
+        playanimation2=""
+        class="diaryscene"
+        visible="false"
+        animation__enter="property: scale; startEvents:mouseenter; to: 0.2 0.2 0.2;dur:200"
+       animation__leave="property: scale; startEvents:mouseleave; to: 0.15 0.15 0.15;dur:200"
+      event-set__enter="_event: mouseenter; _target: #pretext; visible: true"
+      event-set__leave="_event: mouseleave; _target: #pretext; visible: false"          
+               
+        sound="src: #turnpage; on: click">     
+        <a-text id="pretext" value="Previous page" align="center" color="#FFF" visible="false" position="0 -0.7 0"></a-text>
+</a-image>
+
+      <a-image
+        id="cancel"
+        src="#x"
+        position="0.4 2.05198 -2.434"
+        cameraback
+        scale="0.151 0.151 0.151"
+        rotation="12 0 0"
+        class="diaryscene"
+        visible="false"
+       animation__enter="property: scale; startEvents:mouseenter; to: 0.2 0.2 0.2;dur:200"
+       animation__leave="property: scale; startEvents:mouseleave; to: 0.15 0.15 0.15;dur:200"
+      event-set__enter="_event: mouseenter; _target: #canceltext; visible: true"
+      event-set__leave="_event: mouseleave; _target: #canceltext; visible: false"        
+      >
+     <a-text id="canceltext" value="Close" align="center" color="#FFF" visible="false" position="0 -0.7 0"></a-text>
+
+      </a-image>
+
+      <a-image
+        id="enter_sign"
+        src="#typein"
+        position="0.94315 1.018 -2.14015"
+        scale="0.15 0.15 0.15"
+        class="diaryscene"
+        visible="false"
+        rotation="0 0 0"
+       animation__enter="property: scale; startEvents:mouseenter; to: 0.2 0.2 0.2;dur:200"
+       animation__leave="property: scale; startEvents:mouseleave; to: 0.15 0.15 0.15;dur:200"
+      event-set__enter="_event: mouseenter; _target: #typeintext; visible: true"
+      event-set__leave="_event: mouseleave; _target: #typeintext; visible: false"          
+        userinput
+      >
+    <a-text id="typeintext" value="Write diary" align="center" color="#FFF" visible="false" position="0 -0.7 0"></a-text>
+      </a-image>
+
+      <!--巡邏的動畫-->
+
+      <a-entity
+        class="roomscene"
+        id="body"
+        mixin="roaming"
+        gltf-model="#human"
+        scale="0.012 0.012 0.012"
+        rotation="0 90 0"
+        animation-mixer
+        shadow="receive:false"
+        sound="src:#steps; autoplay:true; loop:true; volume:1.5 ;distanceModel:exponential"
+      ></a-entity>
+    </a-scene>
+  </body>
+</html>
